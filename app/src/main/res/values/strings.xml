@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TMDBMovies Applictaion</string>
+    <string name="title_fragment">Movie Detail</string>
+    <string name="original_title">Original Title</string>
+    <string name="overview">A plot synopsis</string>
+    <string name="releasedate">Release Date</string>
+</resources>

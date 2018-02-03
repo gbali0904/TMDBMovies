@@ -1,0 +1,86 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="20dp">
+
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:id="@+id/phsort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            style="@style/Base.TextAppearance.AppCompat.Large"
+            android:textStyle="bold"
+            android:text="SORT" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/phsort"
+            android:background="@color/colorPrimary"
+            android:id="@+id/view2" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/view2"
+            android:layout_marginTop="10dp"
+            android:id="@+id/radioGroup">
+
+            <RadioButton
+                android:id="@+id/rbDialogSortMostPopular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Most Popular" />
+
+            <RadioButton
+                android:id="@+id/rbDialogSortHighestRated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Highest Rated " />
+
+        </RadioGroup>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/radioGroup"
+            android:layout_marginTop="10dp">
+
+
+            <Button
+                android:id="@+id/btnDialogSortOk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:text="OK"/>
+
+            <Button
+                android:id="@+id/btnDialogSortCancel"
+                android:layout_toLeftOf="@id/btnDialogSortOk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:text="Cancel"/>
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</FrameLayout>
