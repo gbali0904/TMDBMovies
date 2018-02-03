@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,7 @@ public class RecyclerViewAdapterForMovies extends RecyclerView.Adapter {
             String poster_path = Constants.IMAGE_URL+resultsBean.getPoster_path();
             Glide.with(mainActivity)
                     .load(poster_path)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(image);
             image.setOnClickListener(new View.OnClickListener() {
                 @Override

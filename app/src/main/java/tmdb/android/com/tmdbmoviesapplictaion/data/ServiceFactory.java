@@ -31,8 +31,10 @@ import tmdb.android.com.tmdbmoviesapplictaion.utility.Constants;
  * Marvel Service interface factory methods
  */
 public class ServiceFactory {
+
     private static ServiceFactory sInstance;
     private Scheduler defaultSubscribeScheduler;
+
     public static ServiceFactory getInstance() {
         if (sInstance == null) {
             sInstance = new ServiceFactory();
@@ -58,10 +60,12 @@ public class ServiceFactory {
         Services apiInterface = retrofit.create(Services.class);
         return apiInterface;
     }
+
     public Scheduler defaultSubscribeScheduler() {
         if (defaultSubscribeScheduler == null) {
             defaultSubscribeScheduler = Schedulers.io();
         }
         return defaultSubscribeScheduler;
     }
+
 }

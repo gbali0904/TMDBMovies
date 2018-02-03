@@ -1,5 +1,6 @@
 package tmdb.android.com.tmdbmoviesapplictaion.moviesDetail;
 
+        import android.database.Cursor;
         import android.database.sqlite.SQLiteDatabase;
         import android.os.Bundle;
         import android.support.v4.app.Fragment;
@@ -16,11 +17,15 @@ package tmdb.android.com.tmdbmoviesapplictaion.moviesDetail;
         import com.bumptech.glide.Glide;
         import com.like.LikeButton;
         import com.like.OnAnimationEndListener;
+        import com.like.OnLikeListener;
+
+        import java.util.ArrayList;
 
         import butterknife.Bind;
         import butterknife.ButterKnife;
         import butterknife.OnClick;
         import tmdb.android.com.tmdbmoviesapplictaion.R;
+        import tmdb.android.com.tmdbmoviesapplictaion.database.SQLiteHelper;
         import tmdb.android.com.tmdbmoviesapplictaion.main.MainActivity;
         import tmdb.android.com.tmdbmoviesapplictaion.main.model.ModelForMoviesList;
         import tmdb.android.com.tmdbmoviesapplictaion.utility.Constants;
@@ -30,7 +35,7 @@ package tmdb.android.com.tmdbmoviesapplictaion.moviesDetail;
 /**
  * Created by Gunjan on 03-02-2018.
  */
-public class MoviesDeatilFragment extends Fragment implements OnAnimationEndListener {
+public class MoviesDeatilFragment extends Fragment implements  OnLikeListener {
     public static final String TAG = MoviesDeatilFragment.class.getSimpleName();
     private static ModelForMoviesList.ResultsBean resultsBean;
     @Bind(R.id.image)
@@ -45,6 +50,8 @@ public class MoviesDeatilFragment extends Fragment implements OnAnimationEndList
     TextView txtForReleaseDate;
     @Bind(R.id.thumb_button)
     LikeButton thumbButton;
+    private SQLiteHelper sQLiteHelper;
+    private String like_status;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +77,8 @@ public class MoviesDeatilFragment extends Fragment implements OnAnimationEndList
         ButterKnife.bind(this, view);
 
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        sQLiteHelper = new SQLiteHelper(getActivity());
+        like_status=  sQLiteHelper.getAllRecordsAlternate(resultsBean.getId());
         Glide.with(getActivity())
                 .load(Constants.IMAGE_URL + resultsBean.getPoster_path())
                 .into(image);
@@ -78,8 +87,17 @@ public class MoviesDeatilFragment extends Fragment implements OnAnimationEndList
 
         rating.setRating((float) resultsBean.getVote_average());
         txtForReleaseDate.setText("Release Date:  " + resultsBean.getRelease_date());
+        if (like_status.equals("1"))
+        {
+            Log.e("this","status active");
+            thumbButton.setLiked(true);
+        }
+        else {
+            Log.e("this","status not active");
+            thumbButton.setLiked(false);
+        }
 
-        thumbButton.setOnAnimationEndListener(this);
+        thumbButton.setOnLikeListener(this);
         return view;
     }
 
@@ -92,7 +110,14 @@ public class MoviesDeatilFragment extends Fragment implements OnAnimationEndList
 
 
     @Override
-    public void onAnimationEnd(LikeButton likeButton) {
-        Log.d(TAG, "Animation End for %s" + likeButton);
+    public void liked(LikeButton likeButton) {
+        like_status="1";
+        sQLiteHelper.updateRecord(resultsBean.getId(),like_status);
+    }
+
+    @Override
+    public void unLiked(LikeButton likeButton) {
+        like_status="0";
+        sQLiteHelper.updateRecord(resultsBean.getId(),like_status);
     }
 }

@@ -23,6 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import tmdb.android.com.tmdbmoviesapplictaion.R;
 import tmdb.android.com.tmdbmoviesapplictaion.app.AppController;
+import tmdb.android.com.tmdbmoviesapplictaion.database.SQLiteHelper;
 import tmdb.android.com.tmdbmoviesapplictaion.main.adapter.RecyclerViewAdapterForMovies;
 import tmdb.android.com.tmdbmoviesapplictaion.main.dialog.SortDialogForMovies;
 import tmdb.android.com.tmdbmoviesapplictaion.main.model.ModelForMoviesList;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements MoviesListView , 
     private List<ModelForMoviesList.ResultsBean> movieList =new ArrayList<>();
     int page=1;
     private int total_pages;
+    private SQLiteHelper sQLiteHelper;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)  {
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements MoviesListView , 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         getSupportActionBar().setTitle("Movies List");
+        sQLiteHelper = new SQLiteHelper(MainActivity.this);
         moviesListPresenterCompl =new MoviesListPresenterCompl(this);
         moviesListPresenterCompl.setProgressBarVisiblity(0);
         moviesListPresenterCompl.getMoviesList(page, sorted_by, false);
@@ -164,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements MoviesListView , 
         total_pages = modelForMoviesList.getTotal_pages();
         movieList.addAll(modelForMoviesList.getResults());
         adapter.notifyDataSetChanged();
+
+            //Insert Data In Local DataBase Sqlite
+         sQLiteHelper.insertRecord(movieList);
 
     }
 

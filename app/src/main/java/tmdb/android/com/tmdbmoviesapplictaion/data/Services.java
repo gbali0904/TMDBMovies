@@ -18,11 +18,4 @@ public interface Services {
                                                   @Query("api_key") String api_key,
                                                   @Query("sort_by") String sort_by,
                                                   @Query("with_original_language") String with_original_language);
-
-    /*
-    @GET("discover/movie")
-    Call<ModelForMoviesList> getMoviesList(@Query("page") int page,
-                                           @Query("api_key") String api_key,
-                                           @Query("sort_by") String sort_by,
-                                           @Query("with_original_language") String with_original_language);*/
 }

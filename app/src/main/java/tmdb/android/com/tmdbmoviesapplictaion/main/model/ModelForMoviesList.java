@@ -197,5 +197,8 @@ public class ModelForMoviesList {
         public void setGenre_ids(List<Integer> genre_ids) {
             this.genre_ids = genre_ids;
         }
+
+
+
     }
 }
