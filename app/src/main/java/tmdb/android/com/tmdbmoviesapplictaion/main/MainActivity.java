@@ -26,7 +26,7 @@ import tmdb.android.com.tmdbmoviesapplictaion.R;
 import tmdb.android.com.tmdbmoviesapplictaion.app.AppController;
 import tmdb.android.com.tmdbmoviesapplictaion.database.MoviesDataBaseHelper;
 import tmdb.android.com.tmdbmoviesapplictaion.di.component.ApplicationComponent;
-import tmdb.android.com.tmdbmoviesapplictaion.di.component.DaggerCakeComponent;
+import tmdb.android.com.tmdbmoviesapplictaion.di.component.DaggerMovieComponent;
 import tmdb.android.com.tmdbmoviesapplictaion.di.model.MovieModule;
 import tmdb.android.com.tmdbmoviesapplictaion.main.adapter.RecyclerViewAdapterForMovies;
 import tmdb.android.com.tmdbmoviesapplictaion.main.dialog.SortDialogForMovies;
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements MoviesListView , 
     }
 
     private void resolveDaggerDependency() {
-        DaggerCakeComponent.builder()
+        DaggerMovieComponent.builder()
                 .applicationComponent(getApplicationComponent())
                 .movieModule(new MovieModule(this))
                 .build().inject(this);
