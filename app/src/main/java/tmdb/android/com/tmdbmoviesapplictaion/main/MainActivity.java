@@ -1,8 +1,8 @@
 package tmdb.android.com.tmdbmoviesapplictaion.main;
 
 import android.app.Dialog;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
@@ -23,15 +24,17 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import tmdb.android.com.tmdbmoviesapplictaion.R;
 import tmdb.android.com.tmdbmoviesapplictaion.app.AppController;
-import tmdb.android.com.tmdbmoviesapplictaion.database.SQLiteHelper;
+import tmdb.android.com.tmdbmoviesapplictaion.database.MoviesDataBaseHelper;
+import tmdb.android.com.tmdbmoviesapplictaion.di.component.ApplicationComponent;
+import tmdb.android.com.tmdbmoviesapplictaion.di.component.DaggerCakeComponent;
+import tmdb.android.com.tmdbmoviesapplictaion.di.model.MovieModule;
 import tmdb.android.com.tmdbmoviesapplictaion.main.adapter.RecyclerViewAdapterForMovies;
 import tmdb.android.com.tmdbmoviesapplictaion.main.dialog.SortDialogForMovies;
 import tmdb.android.com.tmdbmoviesapplictaion.main.model.ModelForMoviesList;
-import tmdb.android.com.tmdbmoviesapplictaion.main.presenter.MoviesListPresenterCompl;
+import tmdb.android.com.tmdbmoviesapplictaion.main.presenter.MoviesPresenterCompl;
 import tmdb.android.com.tmdbmoviesapplictaion.main.view.MoviesListView;
 import tmdb.android.com.tmdbmoviesapplictaion.moviesDetail.MoviesDeatilFragment;
 import tmdb.android.com.tmdbmoviesapplictaion.utility.DialogUtils;
-import tmdb.android.com.tmdbmoviesapplictaion.utility.FragmentManagerUtil;
 
 public class MainActivity extends AppCompatActivity implements MoviesListView , OnMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -39,13 +42,15 @@ public class MainActivity extends AppCompatActivity implements MoviesListView , 
     @Bind(R.id.rvMovies)
     SuperRecyclerView rvMovies;
     private RecyclerViewAdapterForMovies adapter;
-    private MoviesListPresenterCompl moviesListPresenterCompl;
     String sorted_by;
     private List<ModelForMoviesList.ResultsBean> movieList =new ArrayList<>();
     int page=1;
     private int total_pages;
-    private SQLiteHelper sQLiteHelper;
+    private MoviesDataBaseHelper sQLiteHelper;
 
+
+    @Inject
+    protected MoviesPresenterCompl moviesListPresenterCompl;
     @Override
     public boolean onCreateOptionsMenu(Menu menu)  {
         MenuInflater menuInflater = getMenuInflater();
@@ -96,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements MoviesListView , 
     private void sortListAccTo(String sortingType) {
         page=1;
         sorted_by =sortingType;
+
         moviesListPresenterCompl.setProgressBarVisiblity(0);
         moviesListPresenterCompl.getMoviesList(page, sorted_by,true);
     }
@@ -105,15 +111,27 @@ public class MainActivity extends AppCompatActivity implements MoviesListView , 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        resolveDaggerDependency();
         getSupportActionBar().setTitle("Movies List");
-        sQLiteHelper = new SQLiteHelper(MainActivity.this);
-        moviesListPresenterCompl =new MoviesListPresenterCompl(this);
+        sQLiteHelper = new MoviesDataBaseHelper(MainActivity.this);
         moviesListPresenterCompl.setProgressBarVisiblity(0);
         moviesListPresenterCompl.getMoviesList(page, sorted_by, false);
         //Initial Setup of List
         setUpList();
+
+
     }
 
+    private void resolveDaggerDependency() {
+        DaggerCakeComponent.builder()
+                .applicationComponent(getApplicationComponent())
+                .movieModule(new MovieModule(this))
+                .build().inject(this);
+    }
+
+    private ApplicationComponent getApplicationComponent() {
+        return ((AppController) getApplication()).getApplicationComponent();
+    }
     /**
      * Initial Setup
      */
@@ -126,8 +144,8 @@ public class MainActivity extends AppCompatActivity implements MoviesListView , 
         rvMovies.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
         adapter.setOnMovieClickListener(new RecyclerViewAdapterForMovies.OnMovieClickListener() {
             @Override
-            public void onMovieClick(ModelForMoviesList.ResultsBean resultsBean) {
-                moviesListPresenterCompl.moveToDetail(resultsBean);
+            public void onMovieClick(ModelForMoviesList.ResultsBean resultsBean, ImageView image) {
+                moviesListPresenterCompl.moveToDetail(resultsBean,image);
             }
         });
     }
@@ -161,27 +179,34 @@ public class MainActivity extends AppCompatActivity implements MoviesListView , 
     @Override
     public void movieslistSuccess(ModelForMoviesList modelForMoviesList, boolean isShorted) {
         AppController.getInstance().hideProgressDialog();
-        if(isShorted){
-            movieList.clear();
-        }
-        total_pages = modelForMoviesList.getTotal_pages();
-        movieList.addAll(modelForMoviesList.getResults());
-        adapter.notifyDataSetChanged();
-
+        if (!modelForMoviesList.getResults().isEmpty()) {
+            if (isShorted) {
+                movieList.clear();
+            }
+            total_pages = modelForMoviesList.getTotal_pages();
+            movieList.addAll(modelForMoviesList.getResults());
+            adapter.notifyDataSetChanged();
             //Insert Data In Local DataBase Sqlite
-         sQLiteHelper.insertRecord(movieList);
-
+            sQLiteHelper.insertRecord(movieList);
+        }
     }
 
 
     /**
      * Show Movie's Detail
      * @param resultsBean
+     * @param image
      */
     @Override
-    public void openDetailView(ModelForMoviesList.ResultsBean resultsBean) {
+    public void openDetailView(ModelForMoviesList.ResultsBean resultsBean, ImageView image) {
         MoviesDeatilFragment moviesdeatilFragment = MoviesDeatilFragment.newInstance(resultsBean);
-        FragmentManagerUtil.replaceFragment(getSupportFragmentManager(), R.id.activity_main, moviesdeatilFragment, true, MoviesDeatilFragment.TAG);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addSharedElement(image, ViewCompat.getTransitionName(image))
+                .addToBackStack(TAG)
+                .replace(R.id.activity_main, moviesdeatilFragment)
+                .commit();
+
         getSupportActionBar().setTitle("Movie Detail");
     }
 

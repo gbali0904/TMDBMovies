@@ -4,4 +4,5 @@
     <string name="original_title">Original Title</string>
     <string name="overview">A plot synopsis</string>
     <string name="releasedate">Release Date</string>
+    <string name="movie_poster_transition_name">movie_poster</string>
 </resources>

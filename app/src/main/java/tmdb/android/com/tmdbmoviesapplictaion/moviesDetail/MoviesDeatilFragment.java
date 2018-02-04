@@ -1,9 +1,9 @@
 package tmdb.android.com.tmdbmoviesapplictaion.moviesDetail;
 
-        import android.database.Cursor;
-        import android.database.sqlite.SQLiteDatabase;
+        import android.os.Build;
         import android.os.Bundle;
         import android.support.v4.app.Fragment;
+        import android.transition.TransitionInflater;
         import android.util.Log;
         import android.view.LayoutInflater;
         import android.view.Menu;
@@ -16,21 +16,15 @@ package tmdb.android.com.tmdbmoviesapplictaion.moviesDetail;
 
         import com.bumptech.glide.Glide;
         import com.like.LikeButton;
-        import com.like.OnAnimationEndListener;
         import com.like.OnLikeListener;
-
-        import java.util.ArrayList;
 
         import butterknife.Bind;
         import butterknife.ButterKnife;
-        import butterknife.OnClick;
         import tmdb.android.com.tmdbmoviesapplictaion.R;
-        import tmdb.android.com.tmdbmoviesapplictaion.database.SQLiteHelper;
+        import tmdb.android.com.tmdbmoviesapplictaion.database.MoviesDataBaseHelper;
         import tmdb.android.com.tmdbmoviesapplictaion.main.MainActivity;
         import tmdb.android.com.tmdbmoviesapplictaion.main.model.ModelForMoviesList;
         import tmdb.android.com.tmdbmoviesapplictaion.utility.Constants;
-
-        import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Gunjan on 03-02-2018.
@@ -50,7 +44,7 @@ public class MoviesDeatilFragment extends Fragment implements  OnLikeListener {
     TextView txtForReleaseDate;
     @Bind(R.id.thumb_button)
     LikeButton thumbButton;
-    private SQLiteHelper sQLiteHelper;
+    private MoviesDataBaseHelper sQLiteHelper;
     private String like_status;
 
     @Override
@@ -74,10 +68,13 @@ public class MoviesDeatilFragment extends Fragment implements  OnLikeListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.list_movies_deatil, container, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
+        }
         ButterKnife.bind(this, view);
 
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        sQLiteHelper = new SQLiteHelper(getActivity());
+        sQLiteHelper = new MoviesDataBaseHelper(getActivity());
         like_status=  sQLiteHelper.getAllRecordsAlternate(resultsBean.getId());
         Glide.with(getActivity())
                 .load(Constants.IMAGE_URL + resultsBean.getPoster_path())
@@ -107,8 +104,6 @@ public class MoviesDeatilFragment extends Fragment implements  OnLikeListener {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
-
     @Override
     public void liked(LikeButton likeButton) {
         like_status="1";

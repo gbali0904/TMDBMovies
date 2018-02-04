@@ -1,23 +1,23 @@
 package tmdb.android.com.tmdbmoviesapplictaion.main.dialog;
 
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Toast;
+        import android.app.Dialog;
+        import android.graphics.Color;
+        import android.graphics.drawable.ColorDrawable;
+        import android.os.Bundle;
+        import android.support.v4.app.DialogFragment;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.view.WindowManager;
+        import android.widget.RadioButton;
+        import android.widget.RadioGroup;
+        import android.widget.Toast;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import tmdb.android.com.tmdbmoviesapplictaion.R;
-import tmdb.android.com.tmdbmoviesapplictaion.utility.Constants;
+        import butterknife.Bind;
+        import butterknife.ButterKnife;
+        import butterknife.OnClick;
+        import tmdb.android.com.tmdbmoviesapplictaion.R;
+        import tmdb.android.com.tmdbmoviesapplictaion.utility.Constants;
 
 /**
  * Created by Android on 11/2/2017.

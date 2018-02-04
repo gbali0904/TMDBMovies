@@ -7,19 +7,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import tmdb.android.com.tmdbmoviesapplictaion.main.model.ModelForMoviesList;
 
 /**
  * Created by Nikunj on 27-08-2015.
  */
-public class SQLiteHelper extends SQLiteOpenHelper {
+public class MoviesDataBaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "SQLiteDatabase.db";
-
     public static final String TABLE_NAME = "MOVIES";
     public static final String COLUMN_ID = "ID";
     public static final String COLUMN_VOTE_AVERAGE = "VOTE_AVERAGE";
@@ -33,7 +33,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     String like_status=null;
     private SQLiteDatabase database;
 
-    public SQLiteHelper(Context context) {
+    public MoviesDataBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -46,12 +46,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 COLUMN_OVERVIEW + " VARCHAR ," +COLUMN_RELEASE_DATE + " VARCHAR ," +
                 COLUMN_LIKE + " VARCHAR " +
                 ");");
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
     }
 
     public void insertRecord(List<ModelForMoviesList.ResultsBean> resultsBeen) {
@@ -82,6 +76,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         database.close();
     }
 
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
+    }
+
     private boolean isRecordExistInDatabase(int id) {
         Cursor c = database.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ID + "=" + id, null);
         if (c.moveToFirst()) {
@@ -93,6 +93,15 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         c.close();
         return false;
     }
+
+    public void updateRecord(int ID , String like) {
+        database = this.getReadableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_LIKE,like);
+        database.update(TABLE_NAME, contentValues, COLUMN_ID + " = ?", new String[]{String.valueOf(ID)});
+        database.close();
+    }
+
     public String  getAllRecordsAlternate(int ID) {
         database = this.getReadableDatabase();
         Cursor cursor = database.rawQuery( "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ID + "=" + ID, null);
@@ -106,14 +115,5 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         database.close();
         return like_status;
     }
-    public void updateRecord(int ID , String like) {
-        database = this.getReadableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_LIKE,like);
-        database.update(TABLE_NAME, contentValues, COLUMN_ID + " = ?", new String[]{String.valueOf(ID)});
-        database.close();
-    }
-
-
 
 }

@@ -17,17 +17,10 @@ import android.view.WindowManager;
 import com.google.gson.Gson;
 import com.rey.material.widget.ProgressView;
 
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
 import tmdb.android.com.tmdbmoviesapplictaion.R;
-import tmdb.android.com.tmdbmoviesapplictaion.data.Services;
+import tmdb.android.com.tmdbmoviesapplictaion.di.component.ApplicationComponent;
+import tmdb.android.com.tmdbmoviesapplictaion.di.component.DaggerApplicationComponent;
+import tmdb.android.com.tmdbmoviesapplictaion.di.model.ApplicationModule;
 import tmdb.android.com.tmdbmoviesapplictaion.utility.Constants;
 
 
@@ -43,6 +36,7 @@ public class AppController extends Application {
     private Dialog mProgressDlg;
     private ProgressView pv_circular_colors;
 
+    private ApplicationComponent mApplicationComponent;
     public static synchronized AppController getInstance() {
         return mInstance;
     }
@@ -51,8 +45,26 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
 
+        initializeApplicationComponent();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(AppController.this);
         mInstance = this;
+    }
+
+
+    private void initializeApplicationComponent() {
+        mApplicationComponent = DaggerApplicationComponent
+                .builder()
+                .applicationModule(new ApplicationModule(this, Constants.BASE_URL))
+                .build();
+    }
+
+    public ApplicationComponent getApplicationComponent() {
+        return mApplicationComponent;
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
     }
 
     public SharedPreferences getPreference() {

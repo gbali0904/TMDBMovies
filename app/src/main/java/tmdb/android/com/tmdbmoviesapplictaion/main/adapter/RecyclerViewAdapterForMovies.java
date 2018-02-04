@@ -1,25 +1,22 @@
 package tmdb.android.com.tmdbmoviesapplictaion.main.adapter;
 
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+        import android.support.v7.widget.RecyclerView;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+        import com.bumptech.glide.Glide;
+        import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import java.util.ArrayList;
-import java.util.List;
+        import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import tmdb.android.com.tmdbmoviesapplictaion.R;
-import tmdb.android.com.tmdbmoviesapplictaion.main.MainActivity;
-import tmdb.android.com.tmdbmoviesapplictaion.main.model.ModelForMoviesList;
-import tmdb.android.com.tmdbmoviesapplictaion.moviesDetail.MoviesDeatilFragment;
-import tmdb.android.com.tmdbmoviesapplictaion.utility.Constants;
-import tmdb.android.com.tmdbmoviesapplictaion.utility.FragmentManagerUtil;
+        import butterknife.Bind;
+        import butterknife.ButterKnife;
+        import tmdb.android.com.tmdbmoviesapplictaion.R;
+        import tmdb.android.com.tmdbmoviesapplictaion.main.MainActivity;
+        import tmdb.android.com.tmdbmoviesapplictaion.main.model.ModelForMoviesList;
+        import tmdb.android.com.tmdbmoviesapplictaion.utility.Constants;
 
 /**
  * Created by Gunjan on 02-02-2018.
@@ -68,14 +65,14 @@ public class RecyclerViewAdapterForMovies extends RecyclerView.Adapter {
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                   onMovieClickListener.onMovieClick(resultsBean);
+                    onMovieClickListener.onMovieClick(resultsBean, image);
                 }
             });
         }
     }
 
     public interface OnMovieClickListener{
-        void onMovieClick(ModelForMoviesList.ResultsBean resultsBean);
+        void onMovieClick(ModelForMoviesList.ResultsBean resultsBean, ImageView image);
     }
 
     public void setOnMovieClickListener(OnMovieClickListener listener){
