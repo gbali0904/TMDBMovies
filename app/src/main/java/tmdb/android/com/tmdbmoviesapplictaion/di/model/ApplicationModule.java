@@ -30,11 +30,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * @author Filippo Engidashet <filippo.eng@gmail.com>
- * @version 1.0.0
- * @since 9/24/2016
- */
+
 @Module
 public class ApplicationModule {
 
